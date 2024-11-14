@@ -40,3 +40,15 @@ class OnChangeStatusToCompleted extends TaskEvent {
 
   const OnChangeStatusToCompleted({required this.taskId, required this.status});
 }
+
+class OnFilterTaskEvent extends TaskEvent {
+  final String filterStatus;
+
+  const OnFilterTaskEvent({required this.filterStatus});
+}
+
+class OnChangeFilterStatusEvent extends TaskEvent {
+  final String filterStatus;
+
+  const OnChangeFilterStatusEvent({required this.filterStatus});
+}

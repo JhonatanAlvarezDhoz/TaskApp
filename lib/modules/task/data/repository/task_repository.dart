@@ -20,6 +20,10 @@ class TaskRepository {
     return await isar.tasks.where().findAll();
   }
 
+  Future<List<Task>> getTasksByStatus(String filterString) async {
+    return await isar.tasks.filter().statusEqualTo(filterString).findAll();
+  }
+
   Future<bool> updateTask(int taskId, Task task) async {
     final taskToEdit = await isar.tasks.get(taskId);
     if (taskToEdit == null) {

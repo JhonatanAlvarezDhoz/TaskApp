@@ -1,7 +1,10 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:taskapp/common/constants/app_size.dart';
+import 'package:taskapp/common/ui/widgets/widgets.dart';
 
-import 'package:taskapp/common/constants/status_list.dart';
 import 'package:taskapp/modules/home/ui/widgets/widgets.dart';
 import 'package:taskapp/modules/task/controller/bloc/task_bloc.dart';
 import 'package:taskapp/theme/theme_colors.dart';
@@ -24,7 +27,6 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    final statusList = StatusList.statusListFilter;
     final taskBloc = BlocProvider.of<TaskBloc>(context);
 
     return Scaffold(
@@ -44,7 +46,7 @@ class _HomePageState extends State<HomePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CustomAppBar(size: size),
-                        ActionBar(size: size, statusList: statusList),
+                        ActionBar(size: size),
                       ],
                     ),
                   ),
@@ -53,20 +55,57 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     height: size.height - size.height * 0.22,
                     width: size.width,
-                    child: ListView.builder(
-                        itemCount: state.taskList.length,
-                        itemBuilder: (context, index) {
-                          final task = state.taskList[index];
-                          return ItemTask(
-                              task: task,
-                              size: size,
-                              onDelete: (direction) async {
-                                Future.delayed(
-                                    const Duration(seconds: 1),
-                                    () => taskBloc.add(
-                                        OnDeleteTaskEvent(taskId: task.id)));
-                              });
-                        })),
+                    child: state.taskList.isEmpty
+                        ? Center(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                FadeInDown(
+                                  curve: Curves.bounceInOut,
+                                  from: 400,
+                                  child: SvgPicture.asset(
+                                    "assets/icons/empty.svg",
+                                    width: 150,
+                                    colorFilter: const ColorFilter.mode(
+                                      ThemeColors.primary,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+                                ),
+                                CustomText(
+                                  textAlign: TextAlign.center,
+                                  text:
+                                      "Lo sentimos, pero aun no cuenta con tareas creadas o completadas",
+                                  color: ThemeColors.primary,
+                                  fontSize: 20,
+                                  maxLines: 2,
+                                ),
+                                gapH12,
+                                CustomText(
+                                  textAlign: TextAlign.center,
+                                  text: "Agrega o completada algunas!!!",
+                                  color: ThemeColors.primary,
+                                  fontSize: 20,
+                                  maxLines: 2,
+                                )
+                              ],
+                            ),
+                          )
+                        : ListView.builder(
+                            itemCount: state.taskList.length,
+                            itemBuilder: (context, index) {
+                              final task = state.taskList[index];
+                              return ItemTask(
+                                  task: task,
+                                  size: size,
+                                  onDelete: (direction) async {
+                                    Future.delayed(
+                                        const Duration(seconds: 1),
+                                        () => taskBloc.add(OnDeleteTaskEvent(
+                                            taskId: task.id)));
+                                  });
+                            })),
               ],
             ),
           );

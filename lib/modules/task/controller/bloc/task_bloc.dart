@@ -4,7 +4,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:isar/isar.dart';
 import 'package:taskapp/modules/task/controller/helpers/task_bloc_helpers.dart';
 import 'package:taskapp/modules/task/data/models/task.dart';
 
@@ -14,19 +13,19 @@ part 'task_event.dart';
 part 'task_state.dart';
 
 class TaskBloc extends Bloc<TaskEvent, TaskState> {
-  late Future<Isar> db;
-
   final UcCreateTask ucCreateTask;
   final UcUpdateTask ucUpdateTask;
   final UcDeleteTask ucDeleteTask;
   final UcChangeStatus ucChangeStatus;
   final UcGetTaskNoParams ucGetTaskNoParams;
+  final UcFilterTask ucFilterTask;
   TaskBloc(
       {required this.ucCreateTask,
       required this.ucUpdateTask,
       required this.ucDeleteTask,
       required this.ucChangeStatus,
-      required this.ucGetTaskNoParams})
+      required this.ucGetTaskNoParams,
+      required this.ucFilterTask})
       : super(const TaskState()) {
     on<OnCreateTaskEvent>(_createTask);
     on<OnGetTaskEvent>(_getTask);
@@ -34,6 +33,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<OnDeleteTaskEvent>(_deleteTask);
     on<OnChangeStatusToPending>(_changeStatusToPEnding);
     on<OnChangeStatusToCompleted>(_changeStatusToCompleted);
+    on<OnFilterTaskEvent>(_getFilterTask);
+    on<OnChangeFilterStatusEvent>(_changeFilterStatus);
   }
 
   Future<void> _getTask(OnGetTaskEvent event, Emitter<TaskState> emit) async {
@@ -202,6 +203,50 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     } catch (e) {
       emit(state.copyWith(
           taskStatus: TaskStatus.error, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _getFilterTask(
+      OnFilterTaskEvent event, Emitter<TaskState> emit) async {
+    try {
+      final List<Task> filterdTaskList = await ucFilterTask.call(
+          params: UcFilterTaskParams(filterString: event.filterStatus));
+
+      if (filterdTaskList.isNotEmpty) {
+        emit(state.copyWith(taskList: filterdTaskList));
+      } else {
+        emit(state.copyWith(taskList: []));
+      }
+    } catch (e) {
+      emit(state.copyWith(taskList: state.taskList));
+    }
+  }
+
+  Future<void> _changeFilterStatus(
+      OnChangeFilterStatusEvent event, Emitter<TaskState> emit) async {
+    try {
+      emit(state.copyWith(filterStatus: event.filterStatus));
+
+      if (state.filterStatus == "Todas") {
+        add(OnGetTaskEvent());
+        return;
+      }
+      if (state.filterStatus == "Pendientes" ||
+          state.filterStatus == "Completadas") {
+        switch (state.filterStatus) {
+          case "Completadas":
+            add(const OnFilterTaskEvent(filterStatus: "completed"));
+
+            break;
+          case "Pendientes":
+            add(const OnFilterTaskEvent(filterStatus: "pending"));
+
+            break;
+          default:
+        }
+      }
+    } catch (e) {
+      emit(state.copyWith(taskList: state.taskList));
     }
   }
 
