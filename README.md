@@ -6,7 +6,7 @@
    La aplicación muestra una lista de todas las tareas del usuario, incluidos el título, el estado (pendiente o completado) y la fecha de creación.
 
 2. **Agregar Tarea:**  
-   Los usuarios pueden agregar nuevas tareas a la aplicación, especificando el título, la descripción y la fecha de vencimiento.
+   Los usuarios pueden agregar nuevas tareas a la aplicación, especificando el título, la descripción.
 
 3. **Eliminar Tarea:**  
    Los usuarios pueden eliminar las tareas que ya no son relevantes o necesarias, se puede eliminar deslizando la card en el listado de derecha a izquierda y tambien en el detalle de la misma.
@@ -15,7 +15,7 @@
    Los usuarios pueden marcar las tareas como completadas, lo que indica que han sido abordadas.
 
 5. **Filtrado de Tareas:**  
-   La aplicación permite a los usuarios filtrar la lista de tareas por estado (pendiente o completada), lo que facilita centrarse en tareas específicas.
+   La aplicación permite a los usuarios filtrar la lista de tareas por estado (toda, pendiente o completada), lo que facilita centrarse en tareas específicas.
 
 6. **Persistencia de Datos:**  
    Todas las tareas se almacenan localmente en el dispositivo del usuario, lo que garantiza que la lista de tareas se conserve incluso después de cerrar y volver a abrir la aplicación.
