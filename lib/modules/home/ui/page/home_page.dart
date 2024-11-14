@@ -25,6 +25,7 @@ class _HomePageState extends State<HomePage> {
     final size = MediaQuery.of(context).size;
 
     final statusList = StatusList.statusListFilter;
+    final taskBloc = BlocProvider.of<TaskBloc>(context);
 
     return Scaffold(
       backgroundColor: ThemeColors.ligth,
@@ -56,7 +57,15 @@ class _HomePageState extends State<HomePage> {
                         itemCount: state.taskList.length,
                         itemBuilder: (context, index) {
                           final task = state.taskList[index];
-                          return ItemTask(task: task, size: size);
+                          return ItemTask(
+                              task: task,
+                              size: size,
+                              onDelete: (direction) async {
+                                Future.delayed(
+                                    const Duration(seconds: 1),
+                                    () => taskBloc.add(
+                                        OnDeleteTaskEvent(taskId: task.id)));
+                              });
                         })),
               ],
             ),

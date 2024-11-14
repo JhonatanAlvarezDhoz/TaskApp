@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:taskapp/common/ui/widgets/custom_snackbar.dart';
 import 'package:taskapp/common/ui/widgets/widgets.dart';
 import 'package:taskapp/modules/task/controller/bloc/task_bloc.dart';
 import 'package:taskapp/modules/task/data/models/task.dart';
@@ -33,7 +32,7 @@ class UpdateTaskPage extends StatelessWidget {
             if (state.taskStatus == TaskStatus.error) {
               ScaffoldMessenger.of(context).showSnackBar(
                 CustomSnackBar(
-                  message: state.message,
+                  message: state.errorMessage,
                   color: Colors.red.withOpacity(0.7),
                   duration: const Duration(seconds: 3),
                 ),

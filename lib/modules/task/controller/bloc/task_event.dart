@@ -19,4 +19,24 @@ class OnUpdateTaskEvent extends TaskEvent {
   const OnUpdateTaskEvent({required this.taskFormKey});
 }
 
+class OnDeleteTaskEvent extends TaskEvent {
+  final int taskId;
+
+  const OnDeleteTaskEvent({required this.taskId});
+}
+
 class OnGetTaskEvent extends TaskEvent {}
+
+class OnChangeStatusToPending extends TaskEvent {
+  final int taskId;
+  final String status;
+
+  const OnChangeStatusToPending({required this.taskId, required this.status});
+}
+
+class OnChangeStatusToCompleted extends TaskEvent {
+  final int taskId;
+  final String status;
+
+  const OnChangeStatusToCompleted({required this.taskId, required this.status});
+}

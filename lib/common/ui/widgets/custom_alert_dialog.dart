@@ -40,6 +40,7 @@ class CustomAlertDialog extends AlertDialog {
                 CustomText(
                   text: question,
                   textAlign: TextAlign.center,
+                  color: ThemeColors.black.withOpacity(0.4),
                   maxLines: 4,
                   fontSize: 13,
                 ),

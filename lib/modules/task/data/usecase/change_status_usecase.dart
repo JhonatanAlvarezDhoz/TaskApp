@@ -8,7 +8,7 @@ import 'package:taskapp/modules/task/data/repository/task_repository.dart';
 class UcChangeStatusParams extends Params {
   final Id taskId;
   final String status;
-  final DateTime endDate;
+  final DateTime? endDate;
 
   UcChangeStatusParams({
     required this.taskId,

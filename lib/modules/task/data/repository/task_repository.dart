@@ -40,7 +40,7 @@ class TaskRepository {
   }
 
   Future<bool> updateTaskStatus(
-      Id taskId, String status, DateTime endDate) async {
+      Id taskId, String status, DateTime? endDate) async {
     late bool wasUpdate;
     final task = await isar.tasks.get(taskId);
 

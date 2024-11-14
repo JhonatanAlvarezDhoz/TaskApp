@@ -1,11 +1,10 @@
 import 'dart:developer';
 
-import 'package:isar/isar.dart';
 import 'package:taskapp/common/use_case/use_case.dart';
 import 'package:taskapp/modules/task/data/repository/task_repository.dart';
 
 class UcDeleteTasksParams extends Params {
-  final Id taskId;
+  final int taskId;
 
   UcDeleteTasksParams({required this.taskId});
 }

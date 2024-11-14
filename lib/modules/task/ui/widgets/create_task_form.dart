@@ -106,12 +106,20 @@ class CreateTaskForm extends StatelessWidget {
                                     : "Crear Tarea",
                                 borderRadius: BorderRadius.circular(10),
                                 onPressed: () {
-                                  if (onConfirmCreate != null) {
-                                    onConfirmCreate!();
-                                  }
+                                  final isValid =
+                                      formKey.currentState?.saveAndValidate() ??
+                                          false;
 
-                                  if (onConfirmEdit != null) {
-                                    onConfirmEdit!();
+                                  if (isValid) {
+                                    if (onConfirmCreate != null) {
+                                      onConfirmCreate!();
+                                    }
+                                    if (onConfirmEdit != null) {
+                                      onConfirmEdit!();
+                                    }
+                                  } else {
+                                    debugPrint(
+                                        "Formulario no válido, verifica los campos.");
                                   }
                                 },
                               ),

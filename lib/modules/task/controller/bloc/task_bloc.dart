@@ -31,13 +31,20 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<OnCreateTaskEvent>(_createTask);
     on<OnGetTaskEvent>(_getTask);
     on<OnUpdateTaskEvent>(_updateTask);
+    on<OnDeleteTaskEvent>(_deleteTask);
+    on<OnChangeStatusToPending>(_changeStatusToPEnding);
+    on<OnChangeStatusToCompleted>(_changeStatusToCompleted);
   }
 
   Future<void> _getTask(OnGetTaskEvent event, Emitter<TaskState> emit) async {
-    final List<Task> taskList = await ucGetTaskNoParams.call();
+    try {
+      final List<Task> taskList = await ucGetTaskNoParams.call();
 
-    if (taskList.isNotEmpty) {
-      emit(state.copyWith(taskList: taskList));
+      if (taskList.isNotEmpty) {
+        emit(state.copyWith(taskList: taskList));
+      }
+    } catch (e) {
+      emit(state.copyWith(taskList: state.taskList));
     }
   }
 
@@ -59,6 +66,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
             taskStatus: TaskStatus.created,
             message: "Tarea Creada con Exito",
           ));
+          add(OnGetTaskEvent());
         }
         emit(state.copyWith(taskStatus: TaskStatus.initial));
       } else {
@@ -100,6 +108,8 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
             taskStatus: TaskStatus.updated,
             message: "Tarea actualizada con Exito",
           ));
+          add(OnGetTaskEvent());
+          emit(state.copyWith(taskStatus: TaskStatus.initial));
         }
         emit(state.copyWith(taskStatus: TaskStatus.initial));
       } else {
@@ -110,6 +120,86 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       }
     } catch (e) {
       log("Update Task ${e.toString()}");
+      emit(state.copyWith(
+          taskStatus: TaskStatus.error, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _deleteTask(
+      OnDeleteTaskEvent event, Emitter<TaskState> emit) async {
+    emit(state.copyWith(taskStatus: TaskStatus.loading));
+    try {
+      final deleted = await ucDeleteTask.call(
+          params: UcDeleteTasksParams(taskId: event.taskId));
+
+      if (deleted) {
+        emit(state.copyWith(
+            taskStatus: TaskStatus.deleted,
+            message: "Tarea Eliminada con exito."));
+        add(OnGetTaskEvent());
+        emit(state.copyWith(taskStatus: TaskStatus.initial));
+      } else {
+        emit(state.copyWith(
+            taskStatus: TaskStatus.error,
+            errorMessage: "Ocurrio un error, al eliminat la tarea."));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+          taskStatus: TaskStatus.error, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _changeStatusToPEnding(
+      OnChangeStatusToPending event, Emitter<TaskState> emit) async {
+    emit(state.copyWith(taskStatus: TaskStatus.loading));
+
+    try {
+      final changed = await ucChangeStatus.call(
+          params: UcChangeStatusParams(
+              taskId: event.taskId, status: event.status, endDate: null));
+
+      if (changed) {
+        emit(state.copyWith(
+            taskStatus: TaskStatus.success,
+            message: "Estado de tarea Cambiado a por hacer"));
+
+        add(OnGetTaskEvent());
+        emit(state.copyWith(taskStatus: TaskStatus.initial));
+      } else {
+        emit(state.copyWith(
+            taskStatus: TaskStatus.error,
+            errorMessage: "No se pudo cambiar el estado de la tarea"));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+          taskStatus: TaskStatus.error, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _changeStatusToCompleted(
+      OnChangeStatusToCompleted event, Emitter<TaskState> emit) async {
+    emit(state.copyWith(taskStatus: TaskStatus.loading));
+
+    try {
+      final changed = await ucChangeStatus.call(
+          params: UcChangeStatusParams(
+              taskId: event.taskId,
+              status: event.status,
+              endDate: DateTime.now()));
+
+      if (changed) {
+        emit(state.copyWith(
+            taskStatus: TaskStatus.success,
+            message: "Estado de tarea Cambiado a completado"));
+
+        add(OnGetTaskEvent());
+        emit(state.copyWith(taskStatus: TaskStatus.initial));
+      } else {
+        emit(state.copyWith(
+            taskStatus: TaskStatus.error,
+            errorMessage: "No se pudo cambiar el estado de la tarea"));
+      }
+    } catch (e) {
       emit(state.copyWith(
           taskStatus: TaskStatus.error, errorMessage: e.toString()));
     }
