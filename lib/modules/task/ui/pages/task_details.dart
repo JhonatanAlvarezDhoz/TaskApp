@@ -5,6 +5,7 @@ import 'package:taskapp/common/constants/app_size.dart';
 import 'package:taskapp/common/ui/widgets/widgets.dart';
 import 'package:taskapp/modules/task/data/models/task.dart';
 import 'package:taskapp/modules/task/ui/widgets/show_date.dart';
+import 'package:taskapp/routes/app_routes.dart';
 import 'package:taskapp/theme/theme_colors.dart';
 
 class TaskDetails extends StatelessWidget {
@@ -23,7 +24,12 @@ class TaskDetails extends StatelessWidget {
           color: ThemeColors.primary,
         ),
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.edit_square))
+          IconButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .pushNamed(AppRoutes.updateTask, arguments: task);
+              },
+              icon: const Icon(Icons.edit_square))
         ],
       ),
       backgroundColor: ThemeColors.ligth,
@@ -55,27 +61,7 @@ class TaskDetails extends StatelessWidget {
                 color: ThemeColors.black.withOpacity(0.6),
               ),
             ),
-            Row(
-              children: [
-                CustomText(
-                  text: "Estado: ",
-                  fontSize: 24,
-                  fontWeight: FontWeight.w400,
-                  color: ThemeColors.black.withOpacity(0.6),
-                ),
-                const Spacer(),
-                CustomText(
-                  text: task.status,
-                  fontSize: 24,
-                  color: task.status == "completed"
-                      ? Colors.green.withOpacity(0.7)
-                      : ThemeColors.tertiary,
-                ),
-                gapW12,
-                IconCheck(status: task.status),
-                gapW24,
-              ],
-            ),
+            LabelStatus(task: task),
             gapH32,
             ShowDate(
               width: size.width,
@@ -133,6 +119,40 @@ class TaskDetails extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class LabelStatus extends StatelessWidget {
+  const LabelStatus({
+    super.key,
+    required this.task,
+  });
+
+  final Task task;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        CustomText(
+          text: "Estado: ",
+          fontSize: 24,
+          fontWeight: FontWeight.w400,
+          color: ThemeColors.black.withOpacity(0.6),
+        ),
+        const Spacer(),
+        CustomText(
+          text: task.status,
+          fontSize: 24,
+          color: task.status == "completed"
+              ? Colors.green.withOpacity(0.7)
+              : ThemeColors.tertiary,
+        ),
+        gapW12,
+        IconCheck(status: task.status),
+        gapW24,
+      ],
     );
   }
 }

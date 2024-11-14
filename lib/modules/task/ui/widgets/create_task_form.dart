@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:taskapp/common/constants/app_size.dart';
-import 'package:taskapp/common/constants/status_list.dart';
 import 'package:taskapp/common/ui/widgets/widgets.dart';
 import 'package:taskapp/modules/task/controller/bloc/task_bloc.dart';
 import 'package:taskapp/modules/task/data/models/task.dart';
+import 'package:taskapp/modules/task/ui/pages/task_details.dart';
 import 'package:taskapp/theme/theme_colors.dart';
 
 class CreateTaskForm extends StatelessWidget {
@@ -44,6 +44,19 @@ class CreateTaskForm extends StatelessWidget {
                           },
                           initialValue: task?.id,
                           name: "id"),
+                      FormBuilderField(
+                          builder: (context) {
+                            return const SizedBox.shrink();
+                          },
+                          initialValue: task?.createdAt,
+                          name: "createdAt"),
+                      gapH16,
+                      FormBuilderField(
+                          builder: (context) {
+                            return const SizedBox.shrink();
+                          },
+                          initialValue: task?.status,
+                          name: "status"),
                       gapH16,
                       SizedBox(
                         width: constraints.maxWidth * 0.9,
@@ -51,10 +64,11 @@ class CreateTaskForm extends StatelessWidget {
                           children: [
                             CustomRoundedTextFormField(
                               name: 'title',
-                              hintText: 'Titulo del evento',
+                              hintText: 'Titulo de la tarea',
                               iconRoute: null,
-                              errorText: 'El titulo del evento es requerido.',
+                              errorText: 'El titulo de la tarea es requerido.',
                               maxWidth: constraints.maxWidth * 0.9,
+                              maxHeight: constraints.maxHeight * 0.1,
                               maxLines: 1,
                               initialValue: task?.title,
                               isFilled: true,
@@ -62,25 +76,20 @@ class CreateTaskForm extends StatelessWidget {
                             gapH16,
                             CustomRoundedTextFormField(
                               name: 'description',
-                              hintText: 'Descripción del evento',
+                              hintText: 'Descripción de la tarea',
                               iconRoute: null,
                               errorText:
-                                  "La description del evento es requerida",
+                                  "La description de la tarea es requerida",
                               maxWidth: constraints.maxWidth * 0.9,
                               maxLines: 6,
                               maxHeight: constraints.maxHeight * 0.5,
                               initialValue: task?.description,
                             ),
                             gapH16,
-                            CustomDropDown(
-                              name: "status",
-                              elements: StatusList.statusList,
-                              elementValueKey: "value",
-                              elementChildKey: "key",
-                              hint: "Filtrar",
-                              width: constraints.maxWidth * 0.9,
-                              initialValue: task?.status,
-                            ),
+                            if (isUpdate != null && task != null)
+                              LabelStatus(
+                                task: task!,
+                              ),
                             gapH16,
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 16),
@@ -93,8 +102,8 @@ class CreateTaskForm extends StatelessWidget {
                                 textWeight: FontWeight.w500,
                                 textColor: ThemeColors.white,
                                 text: isUpdate != null
-                                    ? "Actualizar evento"
-                                    : "Crear evento",
+                                    ? "Actualizar Tarea"
+                                    : "Crear Tarea",
                                 borderRadius: BorderRadius.circular(10),
                                 onPressed: () {
                                   if (onConfirmCreate != null) {

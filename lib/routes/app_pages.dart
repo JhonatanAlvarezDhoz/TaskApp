@@ -18,9 +18,9 @@ class AppPages {
             builder: (_) => const TaskDetails(), settings: settings);
       case AppRoutes.createTask:
         return CupertinoPageRoute(builder: (_) => CreateTaskPage());
-      // case AppRoutes.updateTask:
-      //   return CupertinoPageRoute(
-      //       builder: (_) => const UpdateTaskPage(), settings: settings);
+      case AppRoutes.updateTask:
+        return CupertinoPageRoute(
+            builder: (_) => UpdateTaskPage(), settings: settings);
 
       default:
         return CupertinoPageRoute(builder: (_) => const Scaffold());

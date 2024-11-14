@@ -28,16 +28,25 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
       required this.ucChangeStatus,
       required this.ucGetTaskNoParams})
       : super(const TaskState()) {
-    on<OnCreateTaskEvent>(_onCreateTask);
+    on<OnCreateTaskEvent>(_createTask);
+    on<OnGetTaskEvent>(_getTask);
+    on<OnUpdateTaskEvent>(_updateTask);
   }
 
-  Future<void> _onCreateTask(
+  Future<void> _getTask(OnGetTaskEvent event, Emitter<TaskState> emit) async {
+    final List<Task> taskList = await ucGetTaskNoParams.call();
+
+    if (taskList.isNotEmpty) {
+      emit(state.copyWith(taskList: taskList));
+    }
+  }
+
+  Future<void> _createTask(
       OnCreateTaskEvent event, Emitter<TaskState> emit) async {
     emit(state.copyWith(taskStatus: TaskStatus.loading));
     _validateForm(event.taskFormKey, emit);
 
     Map<String, dynamic>? formValues = event.taskFormKey.currentState?.value;
-    log(formValues.toString());
 
     try {
       if (formValues != null) {
@@ -48,7 +57,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         if (created) {
           emit(state.copyWith(
             taskStatus: TaskStatus.created,
-            message: "Tarea Creada conExito",
+            message: "Tarea Creada con Exito",
           ));
         }
         emit(state.copyWith(taskStatus: TaskStatus.initial));
@@ -56,10 +65,51 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
         emit(state.copyWith(
             taskStatus: TaskStatus.error,
             errorMessage:
-                "Ups!, Ocurrio un error al crear evento. intente mas tarde"));
+                "Ups!, Ocurrio un error al crear la tarea. intente mas tarde"));
       }
     } catch (e) {
-      log("Created event ${e.toString()}");
+      log("Created task ${e.toString()}");
+      emit(state.copyWith(
+          taskStatus: TaskStatus.error, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _updateTask(
+      OnUpdateTaskEvent event, Emitter<TaskState> emit) async {
+    emit(state.copyWith(taskStatus: TaskStatus.loading));
+
+    _validateForm(event.taskFormKey, emit);
+
+    Map<String, dynamic>? formValues = event.taskFormKey.currentState?.value;
+
+    try {
+      if (formValues != null) {
+        final List<dynamic> formList =
+            TaskBlocHelpres.changeFormValueToEditTask(formValues);
+
+        final int id = formList[0];
+        final Task task = formList[1];
+
+        final updated = await ucUpdateTask.call(
+            params: UcUpdateTaskParams(
+          taskId: id,
+          task: task,
+        ));
+        if (updated) {
+          emit(state.copyWith(
+            taskStatus: TaskStatus.updated,
+            message: "Tarea actualizada con Exito",
+          ));
+        }
+        emit(state.copyWith(taskStatus: TaskStatus.initial));
+      } else {
+        emit(state.copyWith(
+            taskStatus: TaskStatus.error,
+            errorMessage:
+                "Ups!, Ocurrio un error al Actualixzar la tarea. intente mas tarde"));
+      }
+    } catch (e) {
+      log("Update Task ${e.toString()}");
       emit(state.copyWith(
           taskStatus: TaskStatus.error, errorMessage: e.toString()));
     }
