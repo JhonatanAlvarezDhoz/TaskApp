@@ -21,7 +21,7 @@
    Todas las tareas se almacenan localmente en el dispositivo del usuario, lo que garantiza que la lista de tareas se conserve incluso después de cerrar y volver a abrir la aplicación.
 
 7. **Editar Tarea:**  
-   Los usuarios pueden editar los detalles de una tarea existente, como el título, la descripción y la fecha de vencimiento, accediendo a la pantalla de detalles de la tarea.
+   Los usuarios pueden editar los detalles de una tarea existente, como el título, la descripción, accediendo a la pantalla de detalles de la tarea.
 
 ## Ejecucion:
 
