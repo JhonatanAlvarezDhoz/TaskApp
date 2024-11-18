@@ -1,4 +1,4 @@
-# taskapp
+# TaskApp
 
 # Funcionalidades de la Aplicación de Tareas
 
@@ -30,7 +30,7 @@
 1. Clonar el repositorio o descargar el zip
 2. Abrir el proyecto en visual studio code o el editor de su preferencia
 3. Ejecutar el comando "flutter pub get" en la termina para obtener las dependencias y paquetes
-4. Ejecutar el comando "dart run build_runner build" para crear collecion de issar
+4. Ejecutar el comando "dart run build_runner build" en la terminal, para crear collecion de issar
 5. Ejecutar el proyecto
 
 
