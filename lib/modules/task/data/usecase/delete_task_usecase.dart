@@ -23,6 +23,7 @@ class UcDeleteTask extends UseCase<bool, UcDeleteTasksParams> {
         case true:
           return response;
         case false:
+          log(response.toString());
           return throw Exception(
               "No pudo Eliminar la tarea. Intente mas tarde");
         default:

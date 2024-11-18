@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 Container(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    height: size.height - size.height * 0.22,
+                    height: size.height - size.height * 0.3,
                     width: size.width,
                     child: state.taskList.isEmpty
                         ? Center(

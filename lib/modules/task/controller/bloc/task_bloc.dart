@@ -43,6 +43,13 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
 
       if (taskList.isNotEmpty) {
         emit(state.copyWith(taskList: taskList));
+      } else {
+        emit(
+          state.copyWith(
+              taskList: [],
+              taskStatus: TaskStatus.error,
+              errorMessage: "Lalista esta vacia"),
+        );
       }
     } catch (e) {
       emit(state.copyWith(taskList: state.taskList));
@@ -134,6 +141,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
           params: UcDeleteTasksParams(taskId: event.taskId));
 
       if (deleted) {
+        log(deleted.toString());
         emit(state.copyWith(
             taskStatus: TaskStatus.deleted,
             message: "Tarea Eliminada con exito."));
